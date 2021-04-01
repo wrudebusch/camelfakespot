@@ -3,6 +3,7 @@
 
 import pandas as pd
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 
@@ -57,9 +58,12 @@ def get_popular(html_soup):
     return old
 
 
+options = Options()
+options.set_headless(headless=True)
+
 big = pd.DataFrame()
 for page_num in range(1, 11):
-    driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver")
+    driver = webdriver.Chrome(options=options,executable_path="/usr/bin/chromedriver")
     driver.get(f"https://camelcamelcamel.com/popular?p={page_num}")
     soup = BeautifulSoup(driver.page_source, "html.parser")
     driver.quit()

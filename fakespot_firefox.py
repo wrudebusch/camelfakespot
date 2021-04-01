@@ -40,4 +40,4 @@ def run_fakespot(item_id):
     return fakespot_grade
 
 big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
-big.to_csv(f"popular_graded_{timestamp}.csv", index=False)
+big.to_csv(f"../popular_graded_{timestamp}.csv", index=False)
