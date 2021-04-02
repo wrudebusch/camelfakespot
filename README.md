@@ -4,9 +4,11 @@ Camel Camel Camel and FakeSpot Amazon product Python crawler
 ## Quick start
 Hint: Use Chromedriver and don't do the Fakespot step. (change the `webdriver.Firefox` to `webdriver.Chrome` wherever you see it).
 
+```sudo apt-get update && sudo apt-get upgrade && install build-dep python-psycopg2```
+
 ```sudo python3 -m pip install -U pip```
 
-```sudo python3 -m pip install pandas selenium bs4 sqlalchemy python-dotenv pathlib```
+```sudo python3 -m pip install pandas selenium bs4 sqlalchemy python-dotenv pathlib psycopg2```
 
 ## ARM geckodriver
 Below is the process to crosscompile the ARM (Raspberry Pi 4 compatible) Geckodriver for Firefox. Which is needed because Fakespot.com on Chrome will not let you use the search bar for some reason.

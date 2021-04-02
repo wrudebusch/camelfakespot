@@ -23,18 +23,7 @@ pg_user = os.environ.get("PG_USER")
 
 name = sys.argv[1].strip().lower()
 
-
-def fix_df(df):
-    df = df.rename(str.lower, axis="columns")
-    df.columns = df.columns.str.replace("/", "_")
-    df.columns = df.columns.str.strip().str.replace("\s+", "_")
-    df.columns = df.columns.str.replace("[()]", "_")
-    df["last_run"] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    return df
-
-
 df = pd.read_csv(name + ".csv", low_memory=False)
-# df = fix_df(raw)
 
 if len(df) > 0:
     engine = create_engine(
@@ -47,7 +36,8 @@ if len(df) > 0:
         schema="public",
         if_exists="append",
         index=False,
-        chunksize=1000,
+        chunksize=100,
         method="multi",
     )
     print(name + " done " + str(len(df)))
+    

@@ -70,4 +70,4 @@ for page_num in range(1, 11):
     new_df = get_popular(soup)
     big = big.append(new_df, ignore_index=True)
 
-big.to_csv(f"popular_{timestamp}.csv", index=False)
+big.to_csv(f"popular.csv", index=False)
