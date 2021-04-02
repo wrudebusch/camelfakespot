@@ -6,10 +6,10 @@ Hint: Use Chromedriver and don't do the Fakespot step. (change the `webdriver.Fi
 
 ```sudo python3 -m pip install -U pip```
 
-```sudo python3 -m pip install pandas selenium bs4```
+```sudo python3 -m pip install pandas selenium bs4 sqlalchemy python-dotenv pathlib```
 
 ## ARM geckodriver
-Below is the process to crosscompile the ARM (Raspberry Pi 4 compatible) Geckodriver for Firefox. Which is needed because Fakespot.com on ARM Chrome will not let you use the search bar for some reason?
+Below is the process to crosscompile the ARM (Raspberry Pi 4 compatible) Geckodriver for Firefox. Which is needed because Fakespot.com on Chrome will not let you use the search bar for some reason.
 
 ```sudo apt-get install mercurial```
 

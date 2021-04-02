@@ -19,7 +19,7 @@ def get_top_drop(html_soup):
             other_prices = (
                 card.find_all("div", {"class": "compare_price text-center"}),
             )
-            #print(str(other_prices))
+            # print(str(other_prices))
             curret_price_raw = card.find_all(
                 "div", {"class": "current_price text-center"}
             )
@@ -34,7 +34,8 @@ def get_top_drop(html_soup):
                         "previous_price": str(other_prices)
                         .split("Previous price:\n")[1]
                         .split(" </div>")[0]
-                        .split("$")[1].split("<")[0]
+                        .split("$")[1]
+                        .split("<")[0]
                         .strip(),
                         "product_id": str(product_info)
                         .split("/product/")[1]
@@ -140,5 +141,5 @@ for page_num in range(3, 4):
     big = big.append(new_df, ignore_index=True)
 
 big.to_csv(f"top_drops_{timestamp}.csv", index=False)
-#big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
-#big.to_csv(f"ccc_graded_{timestamp}.csv", index=False)
+# big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
+# big.to_csv(f"ccc_graded_{timestamp}.csv", index=False)
