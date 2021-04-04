@@ -61,7 +61,7 @@ sql = """SELECT product_id FROM graded_products WHERE fs_grade IS NULL LIMIT 5;"
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 
-df = pd.read_sql(con, sql)
+df = pd.read_sql(sql,con)
 
 df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
 
