@@ -5,6 +5,21 @@ import pandas as pd
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
+from sqlalchemy import create_engine
+
+## setting enviroment variables
+from dotenv import load_dotenv
+from pathlib import Path
+
+env_path = Path(".") / "test.env"
+load_dotenv(dotenv_path=env_path)
+
+pg_pass = os.environ.get("PG_PASS")
+pg_host = os.environ.get("PG_HOST")
+pg_db = os.environ.get("PG_DB")
+pg_port = os.environ.get("PG_PORT")
+pg_user = os.environ.get("PG_USER")
+
 
 timestamp = str(time.time()).split(".")[0]
 print(timestamp)
@@ -40,5 +55,22 @@ def run_fakespot(item_id):
     return fakespot_grade
 
 
-big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
-big.to_csv(f"../popular_graded_{timestamp}.csv", index=False)
+sql = """SELECT product_id FROM graded_products WHERE fs_grade IS NULL LIMIT 5;"""
+
+engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
+con = engine.connect()
+
+df = pf.read_sql(con, sql)
+
+df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
+
+df.to_sql(
+    "fakespot_results",
+    con,
+    schema="public",
+    if_exists="append",
+    index=False,
+    chunksize=100,
+    method="multi",
+)
+print(name + " done " + str(len(df)))
