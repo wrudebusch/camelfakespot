@@ -61,17 +61,33 @@ sql = """SELECT product_id FROM graded_products WHERE fs_grade IS NULL LIMIT 5;"
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 
-df = pd.read_sql(sql,con)
+keep_going = True
 
-df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
+while keep_going:
 
-df.to_sql(
-    "fakespot_results",
-    con,
-    schema="public",
-    if_exists="append",
-    index=False,
-    chunksize=100,
-    method="multi",
-)
-print(name + " done " + str(len(df)))
+    df = pd.read_sql(sql, con)
+
+    if len(df) > 0:
+
+        df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
+
+        df.to_sql(
+            "fakespot_results",
+            con,
+            schema="public",
+            if_exists="append",
+            index=False,
+            chunksize=100,
+            method="multi",
+        )
+
+        con.execute(
+            """UPDATE graded_products AS g
+        SET fs_grade = f.fs_grade
+        FROM fakespot_results AS f
+        WHERE f.product_id = g.product_id;"""
+        )
+
+        con.execute("""TRUNCATE fakespot_results;""")
+    else:
+        keep_going = False
