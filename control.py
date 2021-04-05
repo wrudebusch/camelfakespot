@@ -20,9 +20,10 @@ for name in ["top_drops", "popular"]:
     os.system(f"python3 any_csv_to_table.py {name}")
     os.remove(name + ".csv")
 
-try:
-    psql_str = f"psql --dbname 'postgres://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}' -f update_fs_grade.sql;"
-    os.system(psql_str)
-    # os.system("rm *.csv")
-except:
-    print("psql error")
+# try:
+#     psql_str = f"psql --dbname 'postgres://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}' -f join_satement.sql;"
+#     os.system(psql_str)
+# except:
+#     print("psql error")
+
+# os.system("python3 fakespot_firefox.py")
