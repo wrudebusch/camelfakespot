@@ -14,9 +14,9 @@ pg_port = os.environ.get("PG_PORT")
 pg_user = os.environ.get("PG_USER")
 
 os.system("python3 popular_chrome.py")
-os.system("python3 top_drops_chrome.py")
+os.system("python3 topdrops_chrome.py")
 
-for name in ["top_drops", "popular"]:
+for name in ["topdrops", "popular"]:
     os.system(f"python3 any_csv_to_table.py {name}")
     os.remove(name + ".csv")
 
