@@ -42,7 +42,7 @@ def run_fakespot(item_id):
     search_button = driver.find_element_by_name("button")
     time.sleep(1)
     search_button.click()
-    time.sleep(5)
+    time.sleep(30)
     try:
         fakespot_grade = get_grade(driver.page_source)
     except:
@@ -68,5 +68,8 @@ df = pd.read_sql(sql, con)
 product_list = df['product_id'].tolist()
 
 for product in product_list:
-    found_grade = run_fakespot(product)
-    con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({product}, {found_grade});"""
+    try:
+        found_grade = run_fakespot(product)
+        con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({product}, {found_grade});""")
+    except:
+        print(product + " failed")
