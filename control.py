@@ -13,7 +13,7 @@ pg_db = os.environ.get("PG_DB")
 pg_port = os.environ.get("PG_PORT")
 pg_user = os.environ.get("PG_USER")
 
-#os.system("python3 popular_chrome.py")
+# os.system("python3 popular_chrome.py")
 os.system("python3 topdrops_chrome.py")
 os.system("python3 any_csv_to_table.py topdrops")
 os.remove("topdrops.csv")

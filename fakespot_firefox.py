@@ -65,13 +65,13 @@ sql = """SELECT DISTINCT td.product_id
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 df = pd.read_sql(sql, con)
-product_list = df['product_id'].tolist()
-
-for product in product_list:
-    try:
-        found_grade = run_fakespot(product)
-        print(found_grade)
-        con = engine.connect()
-        con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({str(product)}, {str(found_grade)});""")
-    except:
-        print(product + " failed")
+df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
+df.to_sql(
+    "fakespot_results",
+    con,
+    schema="public",
+    if_exists="append",
+    index=False,
+    chunksize=100,
+    method="multi",
+)
