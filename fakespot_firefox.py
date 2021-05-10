@@ -70,6 +70,8 @@ product_list = df['product_id'].tolist()
 for product in product_list:
     try:
         found_grade = run_fakespot(product)
+        print(found_grade)
+        con = engine.connect()
         con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({str(product)}, {str(found_grade)});""")
     except:
         print(product + " failed")
