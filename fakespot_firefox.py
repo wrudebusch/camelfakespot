@@ -65,34 +65,8 @@ sql = """SELECT DISTINCT td.product_id
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 df = pd.read_sql(sql, con)
-print(df)
-"""
-keep_going = True
+product_list = df['product_id'].tolist()
 
-while keep_going:
-
-    df = pd.read_sql(sql, con)
-
-    if len(df) > 0:
-
-        df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
-
-        df.to_sql(
-            "fakespot_results",
-            con,
-            schema="public",
-            if_exists="append",
-            index=False,
-            chunksize=100,
-            method="multi",
-        )
-
-        con.execute(
-            UPDATE graded_products AS g
-        SET fs_grade = f.fs_grade
-        FROM fakespot_results AS f
-        WHERE f.product_id = g.product_id;"
-        )
-    else:
-        keep_going = False
-"""
+for product in product_list:
+    found_grade = run_fakespot(product)
+    con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({product}, {found_grade});"""
