@@ -58,7 +58,9 @@ def get_popular(html_soup):
     return old
 
 
-opts = Options()
+opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+opts.add_experimental_option("useAutomationExtension", False)
+opts.add_argument("--disable-blink-features=AutomationControlled")
 opts.headless = True
 
 big = pd.DataFrame()
@@ -70,4 +72,4 @@ for page_num in range(1, 11):
     new_df = get_popular(soup)
     big = big.append(new_df, ignore_index=True)
 
-big.to_csv(f"popular.csv", index=False)
+big.to_csv("popular.csv", index=False)

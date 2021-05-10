@@ -23,7 +23,7 @@ pg_user = os.environ.get("PG_USER")
 
 
 timestamp = str(time.time()).split(".")[0]
-#print(timestamp)
+# print(timestamp)
 
 
 def get_grade(html_str):

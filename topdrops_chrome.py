@@ -62,4 +62,4 @@ for page_num in range(1, 11):
     new_df = get_top_drop(soup)
     big = big.append(new_df, ignore_index=True)
 
-big.to_csv(f"topdrops.csv", index=False)
+big.to_csv("topdrops.csv", index=False)
