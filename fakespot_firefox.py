@@ -56,11 +56,17 @@ def run_fakespot(item_id):
     return fakespot_grade
 
 
-sql = """SELECT product_id FROM graded_products WHERE fs_grade IS NULL LIMIT 5;"""
+sql = """SELECT DISTINCT td.product_id
+        FROM topdrops as td
+        LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
+        WHERE fr.fs_grade IS NULL
+        LIMIT 5;"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
-
+df = pd.read_sql(sql, con)
+print(df)
+"""
 keep_going = True
 
 while keep_going:
@@ -82,12 +88,11 @@ while keep_going:
         )
 
         con.execute(
-            """UPDATE graded_products AS g
+            UPDATE graded_products AS g
         SET fs_grade = f.fs_grade
         FROM fakespot_results AS f
-        WHERE f.product_id = g.product_id;"""
+        WHERE f.product_id = g.product_id;"
         )
-
-        con.execute("""TRUNCATE fakespot_results;""")
     else:
         keep_going = False
+"""
