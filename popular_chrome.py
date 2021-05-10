@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import time
 
 timestamp = str(time.time()).split(".")[0]
-print(timestamp)
+#print(timestamp)
 
 
 def get_popular(html_soup):
@@ -61,7 +61,6 @@ opts = webdriver.ChromeOptions()
 opts.add_experimental_option("excludeSwitches", ["enable-automation"])
 opts.add_experimental_option("useAutomationExtension", False)
 opts.add_argument("--disable-blink-features=AutomationControlled")
-opts.headless = True
 
 big = pd.DataFrame()
 for page_num in range(1, 11):

@@ -52,10 +52,14 @@ def get_top_drop(html_soup):
             print("error")
     return old
 
+opts = webdriver.ChromeOptions()
+opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+opts.add_experimental_option("useAutomationExtension", False)
+opts.add_argument("--disable-blink-features=AutomationControlled")
 
 big = pd.DataFrame()
 for page_num in range(1, 11):
-    driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver")
+    driver = webdriver.Chrome(options=opts, executable_path="/usr/bin/chromedriver")
     driver.get(f"https://camelcamelcamel.com/top_drops?p={page_num}")
     soup = BeautifulSoup(driver.page_source, "html.parser")
     driver.quit()
