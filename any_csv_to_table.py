@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from pathlib import Path
 
-env_path = Path(".") / "test.env"
+env_path = Path("..") / "test.env"
 load_dotenv(dotenv_path=env_path)
 
 pg_pass = os.environ.get("PG_PASS")

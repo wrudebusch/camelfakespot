@@ -23,7 +23,7 @@ pg_user = os.environ.get("PG_USER")
 
 
 timestamp = str(time.time()).split(".")[0]
-print(timestamp)
+#print(timestamp)
 
 
 def get_grade(html_str):
@@ -60,18 +60,19 @@ sql = """SELECT DISTINCT td.product_id
         FROM topdrops as td
         LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
         WHERE fr.fs_grade IS NULL
-        LIMIT 1;"""
+        LIMIT 5;"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 df = pd.read_sql(sql, con)
-df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
-df.to_sql(
-    "fakespot_results",
-    con,
-    schema="public",
-    if_exists="append",
-    index=False,
-    chunksize=100,
-    method="multi",
-)
+if len(df) > 0:
+    df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
+    df.to_sql(
+        "fakespot_results",
+        con,
+        schema="public",
+        if_exists="append",
+        index=False,
+        chunksize=100,
+        method="multi",
+    )
