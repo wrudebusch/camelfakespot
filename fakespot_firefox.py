@@ -60,7 +60,7 @@ sql = """SELECT DISTINCT td.product_id
         FROM topdrops as td
         LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
         WHERE fr.fs_grade IS NULL
-        LIMIT 5;"""
+        LIMIT 1;"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
@@ -70,6 +70,6 @@ product_list = df['product_id'].tolist()
 for product in product_list:
     try:
         found_grade = run_fakespot(product)
-        con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({product}, {found_grade});""")
+        con.execute(f"""INSERT INTO fakespot_results (product_id, fs_grade) VALUES ({str(product)}, {str(found_grade)});""")
     except:
         print(product + " failed")
