@@ -57,7 +57,7 @@ def get_popular(html_soup):
             print("error")
     return old
 
-
+opts = webdriver.ChromeOptions()
 opts.add_experimental_option("excludeSwitches", ["enable-automation"])
 opts.add_experimental_option("useAutomationExtension", False)
 opts.add_argument("--disable-blink-features=AutomationControlled")
