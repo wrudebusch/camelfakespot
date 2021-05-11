@@ -42,7 +42,7 @@ def run_fakespot(item_id):
     search_button = driver.find_element_by_name("button")
     time.sleep(1)
     search_button.click()
-    time.sleep(30)
+    time.sleep(99)
     try:
         fakespot_grade = get_grade(driver.page_source)
     except:
@@ -57,10 +57,15 @@ def run_fakespot(item_id):
 
 
 sql = """SELECT DISTINCT td.product_id
-        FROM topdrops as td
-        LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
-        WHERE fr.fs_grade IS NULL
-        LIMIT 5;"""
+            FROM topdrops as td
+            LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
+            WHERE fr.fs_grade IS NULL
+        UNION
+            SELECT DISTINCT p.product_id
+            FROM popular as p
+            LEFT JOIN fakespot_results AS fr ON p.product_id  = fr.product_id 
+            WHERE fr.fs_grade IS NULL
+        LIMIT 30;"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
