@@ -56,17 +56,11 @@ def run_fakespot(item_id):
     return fakespot_grade
 
 
-sql = """SELECT DISTINCT product_id FROM
-(SELECT td.product_id
-FROM topdrops as td
-LEFT JOIN fakespot_results AS fr ON td.product_id  = fr.product_id 
-WHERE fr.fs_grade IS NULL
-UNION
-SELECT p.product_id
-FROM popular as p
-LEFT JOIN fakespot_results AS fr ON p.product_id  = fr.product_id 
-WHERE fr.fs_grade IS NULL) x
-LIMIT 10;
+sql = """SELECT DISTINCT td.product_id
+FROM topdrops AS td
+JOIN popular as pop ON pop.product_id = td.product_id
+LEFT JOIN fakespot_results AS fs ON td.product_id = fs.product_id
+WHERE fs_grade IS NULL;
 """
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
