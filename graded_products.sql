@@ -1,5 +1,7 @@
-CREATE VIEW graded_products AS (
-SELECT *, 'https://www.amazon.com/dp/'||product_id AS url 
+DROP VIEW graded_products;
+CREATE OR REPLACE VIEW graded_products AS (
+SELECT curret_price AS current_price, fs_grade, LTRIM(LTRIM(LTRIM(product_title, '"'),''''),'Price history for ') AS product_info, 
+	'https://www.amazon.com/dp/'||product_id AS url 
 FROM (SELECT DISTINCT curret_price, previous_price, topdrops.product_id, product_title, fs_grade, 'topdrops' as camel_source
 FROM topdrops 
 JOIN fakespot_results ON topdrops.product_id = fakespot_results.product_id
