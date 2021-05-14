@@ -20,13 +20,13 @@ def get_popular(html_soup):
             other_prices = (
                 card.find_all("div", {"class": "compare_price text-center"}),
             )
-            curret_price_raw = card.find_all(
+            current_price_raw = card.find_all(
                 "div", {"class": "current_price text-center"}
             )
             new_df = pd.DataFrame.from_records(
                 [
                     {
-                        "curret_price": str(curret_price_raw)
+                        "current_price": str(current_price_raw)
                         .split(">")[1]
                         .split("</")[0]
                         .replace("$", "")

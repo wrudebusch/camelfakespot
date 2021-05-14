@@ -15,3 +15,5 @@ os.system("python3 topdrops_chrome.py")
 for name in ["topdrops", "popular"]:
     os.system(f"python3 any_csv_to_table.py {name}")
     os.remove(name + ".csv")
+
+os.system("python3 fakespot_firefox.py")

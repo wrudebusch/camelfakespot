@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW popular_and_topdrop AS (
 SELECT DISTINCT td.product_id, 
-td.curret_price AS current_price, 
+td.current_price, 
 list_price, 
 avg_price, 
 td.previous_price, 
