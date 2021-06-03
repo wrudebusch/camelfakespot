@@ -55,3 +55,6 @@ try {
 	die($e->getMessage());
 }
 ?>
+</table>
+</body>
+</html>
