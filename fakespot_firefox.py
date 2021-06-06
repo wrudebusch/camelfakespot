@@ -35,7 +35,7 @@ def get_grade(html_str):
 
 def run_fakespot(item_id):
     driver = webdriver.Firefox(executable_path="/usr/bin/geckodriver")
-    driver.get("https://www.fakespot.com/")
+    driver.get("https://www.fakespot.com/analyzer")
     amazon_url = "https://www.amazon.com/dp/" + item_id
     search_box = driver.find_element_by_id("url-input-home")
     search_box.send_keys(amazon_url)
