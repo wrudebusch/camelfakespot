@@ -1,0 +1,1 @@
+export DISPLAY=:0 && cd ~/Documents/camelfakespot && python3 control.py
