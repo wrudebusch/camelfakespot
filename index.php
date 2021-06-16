@@ -22,8 +22,8 @@ tr:nth-child(even) {background-color: #f2f2f2}
 <table>
 <tr>
 <th>FS Grade</th>
-<th>URL</th>
 <th>Current Price</th>
+<th>URL</th>
 </tr>
 <?php
 
@@ -45,10 +45,10 @@ try {
 		$data = $pdo->query("SELECT DISTINCT fs_grade, url, product_info, current_price, popular_ts
 			FROM popular_and_topdrop
 			ORDER BY popular_ts
-			LIMIT 100")->fetchAll();
+			LIMIT 1000")->fetchAll();
 		// and somewhere later:
 		foreach ($data as $row) {
-		    echo "<tr><td>" . $row['fs_grade'] . "</td><td>" . ' <a href="' . $row['url'] . '">' . $row['product_info'] . '</a> ' . "</td><td>" . $row['current_price'] . "</td></tr>";
+		    echo "<tr><td>" . $row['fs_grade'] . "</td><td>" . $row['current_price'] . "</td><td>" . ' <a href="' . $row['url'] . '">' . $row['product_info'] . '</a> ' . "</td></tr>";
 		}
 	}
 } catch (PDOException $e) {
