@@ -13,7 +13,6 @@ timestamp = str(time.time()).split(".")[0]
 
 my_option = sys.argv[1].strip().lower()
 
-## this will always come first:
 tic = datetime.now()
 log_name = str(__file__).split(".")[0]
 logging = get_logging(log_name)
@@ -124,7 +123,10 @@ for page_num in range(1, 11):
         driver.get(f"https://camelcamelcamel.com/{my_option}?p={page_num}")
         soup = BeautifulSoup(driver.page_source, "html.parser")
         driver.quit()
-        new_df = get_popular(soup)
+        if my_option == 'top_drops':
+            new_df = get_top_drop(soup)
+        if my_option == 'popular':
+            new_df = get_popular(soup)
         big = big.append(new_df, ignore_index=True)
         logging.info(f"{my_option} at page = {page_num}")
     except:
@@ -132,6 +134,6 @@ for page_num in range(1, 11):
 
 
 big.to_csv(f"{my_option}.csv", index=False)
-## this will be last:
+
 toc = datetime.now()
 logging.info(my_option+ " total runtime: " + str(toc - tic))
