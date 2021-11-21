@@ -52,6 +52,7 @@ def get_top_drop(html_soup):
             print("error")
     return old
 
+
 opts = webdriver.ChromeOptions()
 opts.add_experimental_option("excludeSwitches", ["enable-automation"])
 opts.add_experimental_option("useAutomationExtension", False)

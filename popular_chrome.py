@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import time
 
 timestamp = str(time.time()).split(".")[0]
-#print(timestamp)
+# print(timestamp)
 
 
 def get_popular(html_soup):
@@ -56,6 +56,7 @@ def get_popular(html_soup):
         except:
             print("error")
     return old
+
 
 opts = webdriver.ChromeOptions()
 opts.add_experimental_option("excludeSwitches", ["enable-automation"])
