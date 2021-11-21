@@ -116,6 +116,8 @@ opts.add_experimental_option("excludeSwitches", ["enable-automation"])
 opts.add_experimental_option("useAutomationExtension", False)
 opts.add_argument("--disable-blink-features=AutomationControlled")
 
+big = pd.DataFrame()
+
 for page_num in range(1, 11):
     try:
         driver = webdriver.Chrome(options=opts, executable_path="/usr/bin/chromedriver")

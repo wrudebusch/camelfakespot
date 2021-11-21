@@ -57,7 +57,7 @@ def run_fakespot(item_id):
 
 
 sql = """SELECT DISTINCT td.product_id
-FROM topdrops AS td
+FROM top_drops AS td
 JOIN popular as pop ON pop.product_id = td.product_id
 LEFT JOIN fakespot_results AS fs ON td.product_id = fs.product_id
 WHERE fs_grade IS NULL;
