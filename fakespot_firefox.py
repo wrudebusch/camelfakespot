@@ -36,19 +36,23 @@ def get_grade(html_str):
 def run_fakespot(item_id):
     driver = webdriver.Firefox(executable_path="/usr/bin/geckodriver")
     driver.get("https://www.fakespot.com/analyzer")
+    time.sleep(3)
+    cookie_button = driver.find_element_by_id("CybotCookiebotDialogBodyButtonDecline")
+    cookie_button.click()
     amazon_url = "https://www.amazon.com/dp/" + item_id
     search_box = driver.find_element_by_id("url-input-home")
     search_box.send_keys(amazon_url)
     search_button = driver.find_element_by_name("button")
-    time.sleep(1)
+    time.sleep(3)
     search_button.click()
-    time.sleep(99)
+    time.sleep(9)
     try:
         fakespot_grade = get_grade(driver.page_source)
     except:
         try:
-            time.sleep(99)
+            time.sleep(9)
             fakespot_grade = get_grade(driver.page_source)
+            print(fakespot_grade)
         except:
             fakespot_grade = "0"
             print("error: " + amazon_url)
