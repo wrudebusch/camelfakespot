@@ -1,5 +1,9 @@
+from dotenv import load_dotenv
 import os
 import datetime
+
+
+pg_password = os.getenv("PGPASSWORD")
 
 x = datetime.datetime.now()
 today = str(x.strftime("%Y-%m-%d"))
@@ -15,7 +19,7 @@ for table in table_list:
 my_str = f"mkdir data_{today} && cd data_{today} \n"
 
 for command in command_list: 
-    y = f"psql --dbname 'postgres://postgres:black653!@192.168.1.26:5432/postgres' --command '{command}' \n"
+    y = f"psql --dbname 'postgres://postgres:{pg_password}@192.168.1.26:5432/postgres' --command '{command}' \n"
     my_str+=y
 
 my_str+=f"tar -czvf data_{today}.tar.gz * && cp data_{today}.tar.gz /media/pi/5CEA-1796/"
