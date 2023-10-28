@@ -3,6 +3,7 @@
 
 import pandas as pd
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 import time
 import os
@@ -34,19 +35,17 @@ def get_grade(html_str):
 
 
 def run_fakespot(item_id):
-    driver = webdriver.Firefox(executable_path="/usr/bin/geckodriver")
+    print(item_id)
+    service = Service(executable_path="/usr/bin/geckodriver")
+    driver = webdriver.Firefox(service=service)
     driver.get("https://www.fakespot.com/analyzer")
     time.sleep(3)
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    print(soup)
-    #cookie_button = driver.find_element_by_id("CybotCookiebotDialogBodyButtonDecline")
     cookie_button = driver.find_element("id","CybotCookiebotDialogBodyButtonDecline")
     cookie_button.click()
     amazon_url = "https://www.amazon.com/dp/" + item_id
-    #search_box = driver.find_element_by_id("url-input-home")
     search_box = driver.find_element("id","url-input-home")
     search_box.send_keys(amazon_url)
-    #search_button = driver.find_element_by_name("button")
     search_button = driver.find_element("name", "button")
     time.sleep(3)
     search_button.click()
@@ -55,12 +54,13 @@ def run_fakespot(item_id):
         fakespot_grade = get_grade(driver.page_source)
     except:
         try:
-            time.sleep(9)
+            time.sleep(10)
             fakespot_grade = get_grade(driver.page_source)
             print(fakespot_grade)
         except:
             fakespot_grade = "0"
             print("error: " + amazon_url)
+    driver.close()
     driver.quit()
     return fakespot_grade
 
@@ -69,12 +69,13 @@ sql = """SELECT DISTINCT td.product_id
 FROM top_drops AS td
 JOIN popular as pop ON pop.product_id = td.product_id
 LEFT JOIN fakespot_results AS fs ON td.product_id = fs.product_id
-WHERE fs_grade IS NULL;
+WHERE fs_grade NOT IN ('A','B','C','D','F');
 """
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
 df = pd.read_sql(sql, con)
+#print(df)
 if len(df) > 0:
     df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
     df.to_sql(
