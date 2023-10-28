@@ -3,6 +3,7 @@
 
 import pandas as pd
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 
@@ -10,8 +11,10 @@ timestamp = str(time.time()).split(".")[0]
 print(timestamp)
 
 
+
 def get_top_drop(html_soup):
-    old = pd.DataFrame()
+    #old = pd.DataFrame()
+    df_list = []
     card_div = soup.find_all("div", {"class": "card"})
     for card in card_div:
         try:
@@ -48,16 +51,19 @@ def get_top_drop(html_soup):
                     }
                 ]
             )
-            old = old.append(new_df, ignore_index=True)
+            #old = old.append(new_df, ignore_index=True)
+            df_list.append(new_df)
         except:
             print("error")
-    return old
+    return pd.concat(df_list)
 
 
 def get_popular(html_soup):
-    old = pd.DataFrame()
+    #old = pd.DataFrame()
+    df_list = []
     card_div = soup.find_all("div", {"class": "card"})
     for card in card_div:
+        print(card)
         try:
             product_info = card.select_one("a[href*=product]")
             other_prices = (
@@ -95,10 +101,11 @@ def get_popular(html_soup):
                     }
                 ]
             )
-            old = old.append(new_df, ignore_index=True)
+            #old = old.append(new_df, ignore_index=True)
+            df_list.append(new_df)
         except:
             print("error")
-    return old
+    return pd.concat(df_list)
 
 
 def get_grade(html_str):
@@ -110,9 +117,10 @@ def get_grade(html_str):
 
 def run_fakespot(item_id):
     driver = webdriver.Chrome("/snap/bin/chromium.chromedriver")
-    driver.get("https://www.fakespot.com/")
+    driver.get("https://www.fakespot.com/analyzer")
     amazon_url = "https://www.amazon.com/dp/" + item_id
-    search_box = driver.find_element_by_id("url-input-home")
+    #search_box = driver.find_element_by_id("url-input-home")
+    search_box = driver.find_element(By.ID,"url-input-home")
     search_box.send_keys(amazon_url)
     search_button = driver.find_element_by_name("button")
     time.sleep(1)
@@ -131,15 +139,22 @@ def run_fakespot(item_id):
     return fakespot_grade
 
 
-big = pd.DataFrame()
+my_option = "top_drops"
+
+big_df_list = []
 for page_num in range(3, 4):
     driver = webdriver.Chrome("/snap/bin/chromium.chromedriver")
-    driver.get(f"https://camelcamelcamel.com/top_drops?p={page_num}")
+    driver.get(f"https://camelcamelcamel.com/{my_option}?p={page_num}")
     soup = BeautifulSoup(driver.page_source, "html.parser")
+    ## save soup
+    with open("{my_option}_{page_num}.html", "w") as file:
+        file.write(str(soup))
     driver.quit()
     new_df = get_top_drop(soup)
-    big = big.append(new_df, ignore_index=True)
+    big_df_list.append(new_df)
 
-big.to_csv(f"top_drops_{timestamp}.csv", index=False)
-# big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
+print(len(big_df_list))
+big = pd.concat(big_df_list)
+#big.to_csv(f"top_drops_{timestamp}.csv", index=False)
+big["fs_grade"] = big["product_id"].map(lambda a: run_fakespot(a))
 # big.to_csv(f"ccc_graded_{timestamp}.csv", index=False)
