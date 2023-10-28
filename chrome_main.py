@@ -5,9 +5,14 @@ from utilities import *
 import sys
 from datetime import datetime
 import pandas as pd
-from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 timestamp = str(time.time()).split(".")[0]
 
@@ -118,19 +123,25 @@ opts.add_argument("--disable-blink-features=AutomationControlled")
 big = pd.DataFrame()
 
 for page_num in range(1, 11):
-    try:
-        driver = webdriver.Chrome(options=opts, executable_path="/usr/bin/chromedriver")
-        driver.get(f"https://camelcamelcamel.com/{my_option}?p={page_num}")
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        driver.quit()
-        if my_option == 'top_drops':
-            new_df = get_top_drop(soup)
-        if my_option == 'popular':
-            new_df = get_popular(soup)
-        big = big.append(new_df, ignore_index=True)
-        logging.info(f"{my_option} at page = {page_num}")
-    except:
-        logging.error(f"{my_option} error")
+    #try:
+    service = Service(executable_path="/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=service,options=opts)
+    driver.get(f"https://camelcamelcamel.com/{my_option}?p={page_num}")
+    time.sleep(5)
+    WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,"//iframe[@title='Widget containing a Cloudflare security challenge']")))
+    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//label[@class='ctp-checkbox-label']"))).click()
+    time.sleep(10)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    driver.quit()
+    #print(soup)
+    if my_option == 'top_drops':
+        new_df = get_top_drop(soup)
+    if my_option == 'popular':
+        new_df = get_popular(soup)
+    big = big.append(new_df, ignore_index=True)
+    logging.info(f"{my_option} at page = {page_num}")
+   # except:
+   #     logging.error(f"{my_option} error")
 
 
 big.to_csv(f"{my_option}.csv", index=False)
