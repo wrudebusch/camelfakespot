@@ -128,20 +128,24 @@ for page_num in range(1, 11):
         driver = webdriver.Chrome(service=service,options=opts)
         driver.get(f"https://camelcamelcamel.com/{my_option}?p={page_num}")
         time.sleep(5)
-        WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,"//iframe[@title='Widget containing a Cloudflare security challenge']")))
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//label[@class='ctp-checkbox-label']"))).click()
-        time.sleep(10)
+        try:
+            WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,"//iframe[@title='Widget containing a Cloudflare security challenge']")))
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//label[@class='ctp-checkbox-label']"))).click()
+            time.sleep(10)
+        except:
+            pass
         soup = BeautifulSoup(driver.page_source, "html.parser")
+        driver.close()
         driver.quit()
-        #print(soup)
         if my_option == 'top_drops':
             new_df = get_top_drop(soup)
         if my_option == 'popular':
             new_df = get_popular(soup)
         big = big.append(new_df, ignore_index=True)
         logging.info(f"{my_option} at page = {page_num}")
-   except:
-     logging.error(f"{my_option} error")
+    except:
+        pass
+        logging.error(f"{my_option} error")
 
 
 big.to_csv(f"{my_option}.csv", index=False)
