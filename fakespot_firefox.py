@@ -75,7 +75,7 @@ AND product_id NOT IN (SELECT DISTINCT product_id
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
-df = pd.read_sql(fix_sql, con)
+df = pd.read_sql(sql, con)
 
 if len(df) > 0:
     df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
