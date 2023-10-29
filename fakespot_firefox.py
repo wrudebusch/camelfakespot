@@ -31,6 +31,7 @@ def get_grade(html_str):
     soup = BeautifulSoup(html_str, "html.parser")
     review_div = soup.find_all("div", {"class": "review-grade"})
     grade = str(review_div[0]).split("<p>")[1].split("</p>")[0]
+    print(grade)
     return grade
 
 
@@ -49,33 +50,33 @@ def run_fakespot(item_id):
     search_button = driver.find_element("name", "button")
     time.sleep(3)
     search_button.click()
-    time.sleep(9)
+    time.sleep(19)
     try:
         fakespot_grade = get_grade(driver.page_source)
     except:
-        try:
-            time.sleep(10)
-            fakespot_grade = get_grade(driver.page_source)
-            print(fakespot_grade)
-        except:
-            fakespot_grade = "0"
-            print("error: " + amazon_url)
+        fakespot_grade = "0"
     driver.close()
     driver.quit()
     return fakespot_grade
 
 
-sql = """SELECT DISTINCT td.product_id
+sql = """SELECT td.product_id 
 FROM top_drops AS td
 JOIN popular as pop ON pop.product_id = td.product_id
 LEFT JOIN fakespot_results AS fs ON td.product_id = fs.product_id
-WHERE fs_grade NOT IN ('A','B','C','D','F');
-"""
+WHERE fs_grade IS NULL
+GROUP BY 1
+UNION
+SELECT DISTINCT product_id 
+FROM fakespot_results WHERE fs_grade = '?'
+AND product_id NOT IN (SELECT DISTINCT product_id 
+					   FROM fakespot_results 
+					   WHERE fs_grade = '0');"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
-df = pd.read_sql(sql, con)
-#print(df)
+df = pd.read_sql(fix_sql, con)
+
 if len(df) > 0:
     df["fs_grade"] = df["product_id"].map(lambda a: run_fakespot(a))
     df.to_sql(
