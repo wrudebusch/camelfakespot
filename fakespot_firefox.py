@@ -37,26 +37,27 @@ def get_grade(html_str):
 
 def run_fakespot(item_id):
     print(item_id)
-    service = Service(executable_path="/usr/bin/geckodriver")
-    driver = webdriver.Firefox(service=service)
-    driver.get("https://www.fakespot.com/analyzer")
-    time.sleep(3)
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    cookie_button = driver.find_element("id","CybotCookiebotDialogBodyButtonDecline")
-    cookie_button.click()
-    amazon_url = "https://www.amazon.com/dp/" + item_id
-    search_box = driver.find_element("id","url-input-home")
-    search_box.send_keys(amazon_url)
-    search_button = driver.find_element("name", "button")
-    time.sleep(3)
-    search_button.click()
-    time.sleep(19)
+    fakespot_grade = "0"
     try:
+        service = Service(executable_path="/usr/bin/geckodriver")
+        driver = webdriver.Firefox(service=service)
+        driver.get("https://www.fakespot.com/analyzer")
+        time.sleep(3)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        cookie_button = driver.find_element("id","CybotCookiebotDialogBodyButtonDecline")
+        cookie_button.click()
+        amazon_url = "https://www.amazon.com/dp/" + item_id
+        search_box = driver.find_element("id","url-input-home")
+        search_box.send_keys(amazon_url)
+        search_button = driver.find_element("name", "button")
+        time.sleep(3)
+        search_button.click()
+        time.sleep(19)
         fakespot_grade = get_grade(driver.page_source)
+        driver.close()
+        driver.quit()
     except:
-        fakespot_grade = "0"
-    driver.close()
-    driver.quit()
+        pass
     return fakespot_grade
 
 
@@ -68,10 +69,11 @@ WHERE fs_grade IS NULL
 GROUP BY 1
 UNION
 SELECT DISTINCT product_id 
-FROM fakespot_results WHERE fs_grade = '?'
+FROM fakespot_results WHERE fs_grade = '0'
 AND product_id NOT IN (SELECT DISTINCT product_id 
 					   FROM fakespot_results 
-					   WHERE fs_grade = '0');"""
+					   WHERE fs_grade IN ('A','B','C','D','F','?')
+					   );"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
