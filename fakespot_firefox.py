@@ -73,7 +73,7 @@ FROM fakespot_results WHERE fs_grade = '0'
 AND product_id NOT IN (SELECT DISTINCT product_id 
 					   FROM fakespot_results 
 					   WHERE fs_grade IN ('A','B','C','D','F','?')
-					   );"""
+					   ) LIMIT 10;"""
 
 engine = create_engine(f"postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 con = engine.connect()
